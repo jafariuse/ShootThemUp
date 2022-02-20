@@ -20,6 +20,9 @@ public:
     void FireStop();
     void Reload();
     void NextWeapon();
+
+    bool GetWeaponUIData(FWeaponUIData& WeaponUIData) const;
+    FString GetAmmoString() const;
  
 
 

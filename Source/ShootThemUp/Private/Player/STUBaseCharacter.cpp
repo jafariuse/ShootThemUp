@@ -54,7 +54,6 @@ void ASTUBaseCharacter::BeginPlay()
     HealthComponent->OnHealthChanged.AddUObject(this, &ASTUBaseCharacter::OnHealthChanged);
     LandedDelegate.AddDynamic(this, &ASTUBaseCharacter::OnGroundLanded);
     
-
 }
 
 // Called every frame

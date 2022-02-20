@@ -60,6 +60,18 @@ bool ASTUBaseWeapon::ReadyToFire() const
     return true;
 }
 
+FAmmoData ASTUBaseWeapon::GetAmmoData() const
+{
+   return FAmmoData{Ammo, WeaponConf.AmmoClip,Clips, WeaponConf.Infinite};
+}
+
+FVector2D ASTUBaseWeapon::GetSourceSize(UPaperSprite *Sprite)
+{
+    return Sprite->GetSourceSize();
+}
+
+
+
 // Called when the game starts or when spawned
 void ASTUBaseWeapon::BeginPlay()
 {
@@ -133,7 +145,11 @@ void ASTUBaseWeapon::MakeDamage(FHitResult HitResult)
 {
     auto const Victim = HitResult.GetActor();
     if (!Victim) return;
-    Victim->TakeDamage(WeaponConf.WeaponPower, FDamageEvent{}, nullptr, this);
+    ///////////
+    float Crit = 1.f;
+    if (HitResult.BoneName.ToString()=="b_Head") Crit = 100.f;
+    /////
+    Victim->TakeDamage(WeaponConf.WeaponPower*Crit, FDamageEvent{}, nullptr, this);
     UE_LOG(LogBaseWeapon, Display, TEXT("Bone:%s"), *HitResult.BoneName.ToString());
    
     

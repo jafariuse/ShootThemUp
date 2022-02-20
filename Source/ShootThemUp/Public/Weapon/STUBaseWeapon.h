@@ -27,7 +27,15 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     
     bool ReadyToFire() const;
     bool CanReload() const { return Ammo<WeaponConf.AmmoClip&&Clips >0;};
-    FWeaponConf GetWeaponConf() const {return WeaponConf;}
+    
+    FWeaponUIData GetWeaponUiData() const {return WeaponUiData;}
+    FAmmoData GetAmmoData() const;
+
+    UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Source Size", Keywords = "Source Texture Sprite"), Category = "UI") 
+    static FVector2D GetSourceSize(UPaperSprite* Sprite);
+
+
+
     FOnClipEmptySignature OnClipEmpty;
 
   protected:
@@ -39,6 +47,10 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     float TraceMaxDistance = 1500.0f;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     FWeaponConf WeaponConf;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    FWeaponUIData WeaponUiData;
+
+
 
     FTimerHandle TimerHandle_Fire;
     FTimerHandle TimerHandle_Recoil;

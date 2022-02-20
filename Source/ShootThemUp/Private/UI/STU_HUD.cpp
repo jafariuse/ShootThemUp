@@ -10,7 +10,7 @@ void ASTU_HUD::DrawHUD()
 {
     Super::DrawHUD();
 
-    DrawCrossHair();
+   // DrawCrossHair();
 }
 
 

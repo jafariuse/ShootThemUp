@@ -52,6 +52,7 @@ protected:
 
 	
 	virtual void BeginPlay() override;
+    
 
     
 
@@ -82,8 +83,5 @@ public:
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult &Hit);
-
-
     
-	
 };
