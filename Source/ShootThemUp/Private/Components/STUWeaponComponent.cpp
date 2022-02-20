@@ -9,6 +9,8 @@
 #include "GameFramework/Character.h"
 #include "Weapon/STUBaseWeapon.h"
 
+#include <string>
+
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 // Sets default values for this component's properties
 USTUWeaponComponent::USTUWeaponComponent()
@@ -66,7 +68,23 @@ void USTUWeaponComponent::NextWeapon()
     EquipWeapon(CurrentWeaponIndex);
 }
 
+bool USTUWeaponComponent::GetWeaponUIData(FWeaponUIData& WeaponUIData) const
+{
+    if(!CurrentWeapon) return false;
+    WeaponUIData = CurrentWeapon->GetWeaponUiData();
+    return true;
+}
 
+FString USTUWeaponComponent::GetAmmoString() const
+{
+    FString Result;
+    if(!CurrentWeapon) return Result;
+    const FAmmoData AmmoData = CurrentWeapon->GetAmmoData();
+    const FString OutputText =AmmoData.Infinite?  FString::Printf(TEXT("%s"),L"\u221E") : FString::Printf(TEXT("%i"),AmmoData.AmmoClip*AmmoData.Clips);
+    return  FString::Printf(TEXT("%i/%s"),AmmoData.Ammo, *OutputText);
+    
+    
+}
 
 
 void USTUWeaponComponent::AttachWeaponToSocket(ASTUBaseWeapon *Weapon, const FName& SocketName) const

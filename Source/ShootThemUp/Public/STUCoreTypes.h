@@ -1,8 +1,24 @@
 ﻿#pragma once
+
+#include "PaperSprite.h"
 #include "STUCoreTypes.generated.h"
+
+
 class ASTUBaseWeapon;
 DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature);
 
+USTRUCT(BlueprintType)
+struct FWeaponUIData
+{
+    GENERATED_BODY()
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    UPaperSprite* CrosshairIconSprite;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    UPaperSprite* MainIconSprite;
+        
+    
+};
 
 
 USTRUCT(BlueprintType)
@@ -20,6 +36,8 @@ struct FWeaponConf
     int32 AmmoClip = 30;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     int32 Clips = 3;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    bool Infinite = false;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float ReloadTime = 3.f;
@@ -29,6 +47,7 @@ struct FWeaponConf
     bool SingleAction = true;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     bool Projectile = false;
+  
 };
 
 USTRUCT(BlueprintType)
@@ -40,4 +59,20 @@ struct FWeaponData
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     UAnimMontage* ReloadAnimMontage;
 };
+USTRUCT(BlueprintType)
+struct FAmmoData
+{
+    GENERATED_BODY()
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+    int32 Ammo = 0;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+    int32 AmmoClip = 0;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+    int32 Clips = 0;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+    bool Infinite = false;
+};
+
+
+
 
