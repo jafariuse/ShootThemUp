@@ -35,6 +35,8 @@ public:
     {
         return FMath::IsNearlyZero(Health);
     };
+    UFUNCTION(BlueprintCallable)
+  bool TryAddHealth(float HealSize);
 
 protected:
 	// Called when the game starts
@@ -75,5 +77,6 @@ private:
                          class AController *InstigateBy, AActor *DamageCauser);
     void StartHeal();
     void SetHealth(float newHealth);
+    bool HealthFull();
     void DoHeal();
 };

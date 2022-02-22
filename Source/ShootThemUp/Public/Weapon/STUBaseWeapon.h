@@ -26,10 +26,11 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     virtual void Reload();
     
     bool ReadyToFire() const;
-    bool CanReload() const { return Ammo<WeaponConf.AmmoClip&&Clips >0;};
+    bool CanReload() const { return Ammo<WeaponConf.AmmoClip&&AllAmmo>0;};
     
     FWeaponUIData GetWeaponUiData() const {return WeaponUiData;}
     FAmmoData GetAmmoData() const;
+    bool TryAddClips(const int32 AmmoAmount);
 
     UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Source Size", Keywords = "Source Texture Sprite"), Category = "UI") 
     static FVector2D GetSourceSize(UPaperSprite* Sprite);
@@ -75,17 +76,19 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
 
     bool IsAmmoEmpty() const
     {
-        return IsClipEmpty()&& Clips <1;
+        return IsClipEmpty()&& Clips() <1;
     }
     virtual void MakeShot();
    
     virtual float TimeRemaining(FTimerHandle Timer) const;
  private:
-
+    int32 Clips() const;
+    
     int32 MinAmmo = 0;
     int32 Ammo = 0;
-    int32 Clips = 0;
+    int32 AllAmmo = 0;
     float FireRate = 0.f;
 
+    
  
 };

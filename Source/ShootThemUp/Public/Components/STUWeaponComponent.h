@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Pickups/STUAmmoBasePickup.h"
 #include "Weapon/STUBaseWeapon.h"
 #include "STUWeaponComponent.generated.h"
 
@@ -23,8 +24,7 @@ public:
 
     bool GetWeaponUIData(FWeaponUIData& WeaponUIData) const;
     FString GetAmmoString() const;
- 
-
+    bool TryAddAmmo(const TSubclassOf<ASTUBaseWeapon> & Class, int32 AmmoClips);
 
 
 protected:
