@@ -35,7 +35,7 @@ struct FWeaponConf
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     int32 AmmoClip = 30;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-    int32 Clips = 3;
+    int32 MaxAmmo = 150;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     bool Infinite = false;
     
@@ -69,6 +69,8 @@ struct FAmmoData
     int32 AmmoClip = 0;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
     int32 Clips = 0;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+    int32 MaxAmmo = 0;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
     bool Infinite = false;
 };

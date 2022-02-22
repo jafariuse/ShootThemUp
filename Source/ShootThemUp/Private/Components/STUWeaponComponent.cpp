@@ -80,10 +80,22 @@ FString USTUWeaponComponent::GetAmmoString() const
     FString Result;
     if(!CurrentWeapon) return Result;
     const FAmmoData AmmoData = CurrentWeapon->GetAmmoData();
-    const FString OutputText =AmmoData.Infinite?  FString::Printf(TEXT("%s"),L"\u221E") : FString::Printf(TEXT("%i"),AmmoData.AmmoClip*AmmoData.Clips);
+    const FString OutputText =AmmoData.Infinite?  FString::Printf(TEXT("%s"),L"\u221E") : FString::Printf(TEXT("%i"),AmmoData.MaxAmmo);
     return  FString::Printf(TEXT("%i/%s"),AmmoData.Ammo, *OutputText);
     
     
+}
+
+bool USTUWeaponComponent::TryAddAmmo(const TSubclassOf<ASTUBaseWeapon> &Class, int32  AmmoAmount)
+{
+    for (ASTUBaseWeapon* Weapon:Weapons)
+    {
+        if (Weapon&& Weapon->IsA(Class))
+        {
+            return Weapon->TryAddClips(AmmoAmount);
+        }
+    }
+    return false;
 }
 
 

@@ -17,7 +17,8 @@ ASTUBaseWeapon::ASTUBaseWeapon()
 
 	WeaponMesh= CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMeshComponent");
     SetRootComponent(WeaponMesh);
-    Clips = WeaponConf.Clips;
+    
+    
 
 }
 
@@ -62,7 +63,16 @@ bool ASTUBaseWeapon::ReadyToFire() const
 
 FAmmoData ASTUBaseWeapon::GetAmmoData() const
 {
-   return FAmmoData{Ammo, WeaponConf.AmmoClip,Clips, WeaponConf.Infinite};
+   return FAmmoData{Ammo, WeaponConf.AmmoClip, Clips(), AllAmmo, WeaponConf.Infinite};
+}
+
+bool ASTUBaseWeapon::TryAddClips(const int32 AmmoAmount)
+{
+    if (WeaponConf.Infinite||AllAmmo==WeaponConf.MaxAmmo) return false;
+    const int32 Delta = FMath::Min(WeaponConf.AmmoClip-Ammo,AllAmmo);
+    Ammo += Delta;
+    AllAmmo = FMath::Clamp(AllAmmo+AmmoAmount-Delta, AllAmmo, WeaponConf.MaxAmmo); 
+    return true;
 }
 
 FVector2D ASTUBaseWeapon::GetSourceSize(UPaperSprite *Sprite)
@@ -78,6 +88,7 @@ void ASTUBaseWeapon::BeginPlay()
 	Super::BeginPlay();
     FireRate = WeaponConf.BMP == 0 ? 0 : 60 / WeaponConf.BMP;
     check(WeaponMesh);
+    AllAmmo = WeaponConf.MaxAmmo;
     
 	
 }
@@ -97,6 +108,11 @@ float ASTUBaseWeapon::TimeRemaining(const FTimerHandle Timer) const
     return FMath::Max(Remain, 0.f);
 }
 
+int32 ASTUBaseWeapon::Clips() const
+{
+    return AllAmmo/WeaponConf.AmmoClip;
+}
+
 bool ASTUBaseWeapon::GetPlayerController(APlayerController*  &Controller) const
 {
     const auto Player = Cast<ACharacter>(GetOwner());
@@ -109,9 +125,9 @@ bool ASTUBaseWeapon::GetPlayerController(APlayerController*  &Controller) const
 
 void ASTUBaseWeapon::Reload()
 {
-    Ammo = WeaponConf.AmmoClip;
-    UE_LOG(LogBaseWeapon, Display, TEXT("Ready"));
-    Clips --;
+    const int32 Delta = FMath::Min(WeaponConf.AmmoClip-Ammo,AllAmmo);
+    Ammo += Delta;
+    AllAmmo -= Delta; 
     
 }
 
@@ -196,6 +212,7 @@ void ASTUBaseWeapon::MakeShot()
        return;
     }
     Ammo --;
+    
     if (IsClipEmpty() && !IsAmmoEmpty())
     {
         OnClipEmpty.Broadcast();
