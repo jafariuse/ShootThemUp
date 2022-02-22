@@ -22,6 +22,8 @@ ASTU_Projectile::ASTU_Projectile()
    
     MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
     MovementComponent->ProjectileGravityScale = 0.0f;
+
+    WeaponFXComponent = CreateDefaultSubobject<USTUWeaponFXComponent>("WeaponFXComponent");
    
 }
 
@@ -34,6 +36,7 @@ void ASTU_Projectile::BeginPlay()
     
     check(MovementComponent);
     check(CollisionComponent);
+    check(WeaponFXComponent);
 
 
     MovementComponent->Velocity = ShotDirection * MovementComponent->InitialSpeed;
@@ -57,7 +60,7 @@ void ASTU_Projectile::OnProjetileHit(UPrimitiveComponent *HitComponent, AActor *
     DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24, FColor::Red,false,5.0f);
     UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), DamageRadius, UDamageType::StaticClass(), 
         {}, this,GetController(),false);
-
+    WeaponFXComponent->PlayImpactFX(Hit);
     Destroy();
 }
 
