@@ -89,6 +89,7 @@ void ASTUBaseWeapon::BeginPlay()
     FireRate = WeaponConf.BMP == 0 ? 0 : 60 / WeaponConf.BMP;
     check(WeaponMesh);
     AllAmmo = WeaponConf.MaxAmmo;
+    Ammo = WeaponConf.AmmoClip;
     
 	
 }
@@ -175,6 +176,7 @@ void ASTUBaseWeapon::MakeHit(FHitResult& HitResult, FVector TraceStart, FVector 
 {
     FCollisionQueryParams CollisionQueryParams;
     CollisionQueryParams.AddIgnoredActor(GetOwner());
+    CollisionQueryParams.bReturnPhysicalMaterial = true;
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility,
                                          CollisionQueryParams);
 }
@@ -184,24 +186,10 @@ FVector ASTUBaseWeapon::GetMuzzleLocation()const
     return WeaponMesh->GetSocketLocation(MuzzleSocketName);
 }
 
-void ASTUBaseWeapon::DrawShot()
+void ASTUBaseWeapon::DrawShot(FHitResult HitResult)
 {
-    FVector TraceStart;
-    FVector TraceEnd;
-    if (!GetTraceData(TraceStart, TraceEnd)) return;
-
-    FHitResult HitResult;
-
-
-    MakeHit(HitResult, TraceStart, TraceEnd);
-
-    if (HitResult.bBlockingHit)
-    {
-        DrawDebugLine(GetWorld(), GetMuzzleLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.f);
-        MakeDamage(HitResult);
-       
-    }
-    
+    DrawDebugLine(GetWorld(), GetMuzzleLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.f);
+    MakeDamage(HitResult);
 }
 
 void ASTUBaseWeapon::MakeShot()
@@ -218,7 +206,21 @@ void ASTUBaseWeapon::MakeShot()
         OnClipEmpty.Broadcast();
     };
 
-    DrawShot();
+   
+    FVector TraceStart;
+    FVector TraceEnd;
+    if (!GetTraceData(TraceStart, TraceEnd)) return;
+
+    FHitResult HitResult;
+
+
+    MakeHit(HitResult, TraceStart, TraceEnd);
+
+    if (HitResult.bBlockingHit)
+    {
+        DrawShot(HitResult);
+        
+    }
     GetWorld()->GetTimerManager().SetTimer(TimerHandle_Recoil, this, &ASTUBaseWeapon::Recoil, FireRate);
 }
 

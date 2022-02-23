@@ -67,7 +67,7 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     
     virtual bool GetTraceData(FVector &TraceStart, FVector &TraceEnd) const;
     
-    virtual void DrawShot();
+    virtual void DrawShot(FHitResult HitResult);
 
     bool IsClipEmpty() const
     {

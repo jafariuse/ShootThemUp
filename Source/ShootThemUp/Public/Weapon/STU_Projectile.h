@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "STUWeaponFXComponent.h"
 #include "GameFramework/Actor.h"
 #include "STU_Projectile.generated.h"
 
@@ -29,6 +30,8 @@ protected:
     USphereComponent *CollisionComponent;
     UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
     UProjectileMovementComponent *MovementComponent;
+    UPROPERTY(VisibleDefaultsOnly, Category = "FX")
+    USTUWeaponFXComponent *WeaponFXComponent;
 
 
     UPROPERTY(EditAnywhere, Category = "Weapon")

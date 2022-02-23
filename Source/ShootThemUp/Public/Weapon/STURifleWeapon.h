@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "STUWeaponFXComponent.h"
 #include "Weapon/STUBaseWeapon.h"
 #include "STURifleWeapon.generated.h"
 
@@ -11,12 +12,14 @@ UCLASS()
 class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon
 {
 	GENERATED_BODY()
-
+    ASTURifleWeapon();
+    
 public:
-    /* virtual void FireStart() override;
-	virtual void FireStop() override;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "FX")
+    USTUWeaponFXComponent* WeaponFXComponent;
+
+    virtual void BeginPlay() override;
 protected:
-    virtual void MakeShot() override;
-    FTimerHandle TimerHandle_Fire;*/
-	
+    virtual void DrawShot(FHitResult HitResult) override;
+    
 };

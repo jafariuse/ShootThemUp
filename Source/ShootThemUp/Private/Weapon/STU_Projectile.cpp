@@ -19,9 +19,11 @@ ASTU_Projectile::ASTU_Projectile()
     SetRootComponent(CollisionComponent);
     CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+    CollisionComponent->bReturnMaterialOnMove = true;
    
     MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
     MovementComponent->ProjectileGravityScale = 0.0f;
+    WeaponFXComponent = CreateDefaultSubobject<USTUWeaponFXComponent>("WeaponFXComponent");
    
 }
 
@@ -34,10 +36,12 @@ void ASTU_Projectile::BeginPlay()
     
     check(MovementComponent);
     check(CollisionComponent);
+    check(WeaponFXComponent);
 
 
     MovementComponent->Velocity = ShotDirection * MovementComponent->InitialSpeed;
     CollisionComponent->OnComponentHit.AddDynamic(this, &ASTU_Projectile::OnProjetileHit);
+    
 
     SetLifeSpan(5.0f);
 	
@@ -54,10 +58,10 @@ void ASTU_Projectile::OnProjetileHit(UPrimitiveComponent *HitComponent, AActor *
 {
     if (!GetWorld()) return;
     MovementComponent->StopMovementImmediately();
-    DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24, FColor::Red,false,5.0f);
+  //  DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24, FColor::Red,false,5.0f);
     UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), DamageRadius, UDamageType::StaticClass(), 
         {}, this,GetController(),false);
-
+    WeaponFXComponent->PlayImpactFX(Hit);
     Destroy();
 }
 
