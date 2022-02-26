@@ -4,31 +4,42 @@
 #include "Weapon/STURifleWeapon.h"
 
 #include "DrawDebugHelpers.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
-/* void ASTURifleWeapon::FireStart()
+
+ASTURifleWeapon::ASTURifleWeapon()
 {
-    MakeShot();
-    GetWorldTimerManager().SetTimer(TimerHandle_Fire, this, &ASTURifleWeapon::MakeShot,60 / WeaponConf.BMP,true);
-
+    WeaponFXComponent = CreateDefaultSubobject<USTUWeaponFXComponent>("WeaponFXComponent");
 }
 
-void ASTURifleWeapon::FireStop()
+void ASTURifleWeapon::BeginPlay()
 {
-    GetWorldTimerManager().ClearTimer(TimerHandle_Fire);
+    Super::BeginPlay();
+    check(WeaponFXComponent);
 }
 
-void ASTURifleWeapon::MakeShot()
+void ASTURifleWeapon::DrawImpact(FHitResult HitResult)
 {
-    if (!GetWorld())
-        return;
-    FVector TraceStart, TraceEnd;
-    if (!GetTraceData(TraceStart,TraceEnd))return;
-    FHitResult HitResult;
-    MakeHit(HitResult, TraceStart, TraceEnd);
-    if (HitResult.bBlockingHit)
+
+    WeaponFXComponent->PlayImpactFX(HitResult);
+    MakeDamage(HitResult);
+    
+}
+
+void ASTURifleWeapon::DrawShot(const FVector &TraceStart, const FVector &TraceEnd)
+{
+    SpawnTraceFX(TraceStart, TraceEnd);
+}
+
+void ASTURifleWeapon::SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd)
+{
+   const auto TraceComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),TraceFX,TraceStart);
+    if (TraceComponent)
     {
-        MakeDamage(HitResult);
-        DrawDebugLine(GetWorld(), GetMuzzleLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.f);
+        TraceComponent->SetNiagaraVariableVec3(TraceTargetName,TraceEnd);
+        
     }
+    
 }
-*/
+

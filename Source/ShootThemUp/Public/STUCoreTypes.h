@@ -5,6 +5,7 @@
 
 
 class ASTUBaseWeapon;
+class UNiagaraSystem;
 DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature);
 
 USTRUCT(BlueprintType)
@@ -75,6 +76,30 @@ struct FAmmoData
     bool Infinite = false;
 };
 
+USTRUCT(BlueprintType)
+struct FDecalData
+{
+    GENERATED_BODY()
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="FX")
+    UMaterialInterface* Material;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="FX")
+    FVector Size = FVector(10.0f);
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="FX")
+    float LifeTime = 5.0f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="FX")
+    float FadeOutTime = 5.0f;
+};
 
 
+USTRUCT(BlueprintType)
+struct FImpactData
+{
+    GENERATED_BODY()
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="FX")
+    UNiagaraSystem* NiagaraEffect;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="FX")
+    FDecalData DecalData;
+    
 
+    
+};

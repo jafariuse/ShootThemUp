@@ -19,6 +19,9 @@ public:
     float GetHealthPercent() const;
     UFUNCTION(BlueprintCallable, Category="UI")
     int32 GetHealth() const;
+
+    UFUNCTION(BlueprintImplementableEvent, Category="UI")
+    void OnTakeDamage();
     
     UFUNCTION(BlueprintCallable, Category="UI")
     bool GetWeaponUIData(FWeaponUIData& WeaponUIData) const;
@@ -31,5 +34,9 @@ public:
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     UTexture2D* HitTexture;
- 
+
+    virtual bool Initialize() override;
+    
+private:
+    void OnHealthChanged(float Health, float HealthDelta);
 };

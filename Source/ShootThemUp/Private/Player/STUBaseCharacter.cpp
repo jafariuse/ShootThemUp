@@ -49,7 +49,7 @@ void ASTUBaseCharacter::BeginPlay()
 
     check(HealthComponent);
 
-    OnHealthChanged(HealthComponent->GetHealth());
+    OnHealthChanged(HealthComponent->GetHealth(),0.0f);
     HealthComponent->OnDeath.AddUObject(this, &ASTUBaseCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &ASTUBaseCharacter::OnHealthChanged);
     LandedDelegate.AddDynamic(this, &ASTUBaseCharacter::OnGroundLanded);
@@ -127,13 +127,16 @@ void ASTUBaseCharacter::OnStopRunning()
 
 void ASTUBaseCharacter::OnDeath()
 {
-    PlayAnimMontage(DeathAnimMontage);
+    //PlayAnimMontage(DeathAnimMontage);
+    
     GetCharacterMovement()->DisableMovement();
     SetLifeSpan(5.0f);
     if (Controller)
     {
         Controller->ChangeState(NAME_Spectating);
     }
+    GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    GetMesh()->SetSimulatePhysics(true);
 }
 
 void ASTUBaseCharacter::OnGroundLanded(const FHitResult &Hit)
@@ -148,7 +151,7 @@ void ASTUBaseCharacter::OnGroundLanded(const FHitResult &Hit)
 
 
 
-void ASTUBaseCharacter::OnHealthChanged(const float Health) const
+void ASTUBaseCharacter::OnHealthChanged(const float Health, const float HealthDelta) const
 {
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%0.f"), Health)));
 }

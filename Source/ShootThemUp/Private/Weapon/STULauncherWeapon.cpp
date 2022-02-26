@@ -7,19 +7,14 @@
 #include "Weapon/STU_Projectile.h"
 
 
-void ASTULauncherWeapon::DrawShot()
+void ASTULauncherWeapon::DrawShot(const FVector &TraceStart, const FVector &TraceEnd)
 {
-    FVector TraceStart, TraceEnd;
-    if (!GetTraceData(TraceStart, TraceEnd)) return;
-
-    FHitResult HitResult;
-
-    MakeHit(HitResult, TraceStart, TraceEnd);
+   
    
 
-    const FVector EndPoint = HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd;
-    const FVector Direction = (EndPoint - GetMuzzleLocation()).GetSafeNormal();
-    DrawDebugLine(GetWorld(), GetMuzzleLocation(), EndPoint, FColor::Green, false, 3.0f, 0, 3.f);
+    
+    const FVector Direction = (TraceEnd - GetMuzzleLocation()).GetSafeNormal();
+    //DrawDebugLine(GetWorld(), GetMuzzleLocation(), EndPoint, FColor::Green, false, 3.0f, 0, 3.f);
 
    
     //const FTransform SpawnTransform(Direction.Rotation(), GetMuzzleLocation());
