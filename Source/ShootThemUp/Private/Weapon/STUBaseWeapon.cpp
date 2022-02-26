@@ -82,12 +82,12 @@ bool ASTUBaseWeapon::TryAddClips(const int32 AmmoAmount)
     AllAmmo = FMath::Clamp(AllAmmo+AmmoAmount-Delta, AllAmmo, WeaponConf.MaxAmmo); 
     return true;
 }
-
+/*
 FVector2D ASTUBaseWeapon::GetSourceSize(UPaperSprite *Sprite)
 {
     return Sprite->GetSourceSize();
 }
-
+*/
 
 
 // Called when the game starts or when spawned

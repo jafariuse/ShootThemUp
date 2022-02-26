@@ -6,13 +6,14 @@
 #include "STUCoreTypes.h"
 #include "STUWEaponFXComponent.h"
 #include "GameFramework/Actor.h"
+#include "PaperSprite.h"
 #include "STUBaseWeapon.generated.h"
 
 
 
 class USkeletalMeshComponent;
 class UNiagaraComponent;
-class UPaperSprite;
+
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
@@ -33,9 +34,9 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     FAmmoData GetAmmoData() const;
     bool TryAddClips(const int32 AmmoAmount);
 
-    UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Source Size", Keywords = "Source Texture Sprite"), Category = "UI") 
+/*    UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Source Size", Keywords = "Source Texture Sprite"), Category = "UI") 
      FVector2D GetSourceSize(UPaperSprite* Sprite);
-
+*/
 
 
     FOnClipEmptySignature OnClipEmpty;
