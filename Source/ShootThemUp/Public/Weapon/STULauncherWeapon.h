@@ -16,8 +16,9 @@ class SHOOTTHEMUP_API ASTULauncherWeapon : public ASTUBaseWeapon
 	GENERATED_BODY()
 
 protected:
-	virtual void DrawShot(FHitResult HitResult) override;
-
+	
+	virtual void DrawShot(const FVector &TraceStart, const FVector &TraceEnd) override;
+    
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     TSubclassOf<ASTU_Projectile> ProjectileClass;
 };

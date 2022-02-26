@@ -17,7 +17,7 @@ ASTU_Projectile::ASTU_Projectile()
     CollisionComponent = CreateDefaultSubobject<USphereComponent>("CollisionComponent");
     CollisionComponent->InitSphereRadius(CollisionRadius);
     SetRootComponent(CollisionComponent);
-    CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
     CollisionComponent->bReturnMaterialOnMove = true;
    
@@ -63,6 +63,7 @@ void ASTU_Projectile::OnProjetileHit(UPrimitiveComponent *HitComponent, AActor *
         {}, this,GetController(),false);
     WeaponFXComponent->PlayImpactFX(Hit);
     Destroy();
+    
 }
 
 

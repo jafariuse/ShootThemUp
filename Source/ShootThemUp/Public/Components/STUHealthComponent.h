@@ -7,8 +7,10 @@
 #include "STUHealthComponent.generated.h"
 
 
+class USTUHealthComponent;
+
 DECLARE_MULTICAST_DELEGATE(FOnDeath)
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHealthChanged, float,float)
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
@@ -53,6 +55,8 @@ protected:
     float HealDelay = 3.0f;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
     float HealModifier = 1.0f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "FX"))
+    TSubclassOf<UCameraShakeBase> CameraShake;
     
 
 public:	
@@ -75,8 +79,9 @@ private:
     UFUNCTION(BlueprintCallable)
     void OnTakeAnyDamage(AActor *DamageActor, const float Damage, const class UDamageType *DamageType,
                          class AController *InstigateBy, AActor *DamageCauser);
-    void StartHeal();
+    //void StartHeal();
     void SetHealth(float newHealth);
     bool HealthFull();
     void DoHeal();
+    void PlayCameraShake() const;
 };

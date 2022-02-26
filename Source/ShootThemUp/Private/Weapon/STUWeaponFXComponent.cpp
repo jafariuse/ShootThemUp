@@ -1,8 +1,7 @@
 // Shoot them up game
 
-#include "NiagaraFunctionLibrary.h"
 #include "Weapon/STUWeaponFXComponent.h"
-
+#include "NiagaraFunctionLibrary.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
 

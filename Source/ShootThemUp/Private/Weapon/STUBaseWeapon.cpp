@@ -4,8 +4,12 @@
 #include "Weapon/STUBaseWeapon.h"
 
 #include "DrawDebugHelpers.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "PaperSprite.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Character.h"
+#include "Weapon/STUWEaponFXComponent.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
@@ -28,6 +32,7 @@ void ASTUBaseWeapon::FireStart()
  
     
     MakeShot();
+    
     if (!WeaponConf.SingleAction)
     {
         GetWorld()->GetTimerManager().SetTimer(TimerHandle_Fire, this, &ASTUBaseWeapon::MakeShot, FireRate, true);
@@ -40,7 +45,10 @@ void ASTUBaseWeapon::FireStop()
     if (!GetWorld())
         return;
     GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Fire);
-    
+    if (MuzzleFxComponent)
+    {
+        SetMuzzleFXVisibility(false);
+    }
 }
 
 
@@ -114,6 +122,16 @@ int32 ASTUBaseWeapon::Clips() const
     return AllAmmo/WeaponConf.AmmoClip;
 }
 
+void ASTUBaseWeapon::SetMuzzleFXVisibility(bool bCond)
+{
+    if(!MuzzleFxComponent)
+    {
+        MuzzleFxComponent = SpawnMuzzleFX();
+    };
+    MuzzleFxComponent->SetPaused(!bCond);
+    MuzzleFxComponent->SetVisibility(bCond);
+}
+
 bool ASTUBaseWeapon::GetPlayerController(APlayerController*  &Controller) const
 {
     const auto Player = Cast<ACharacter>(GetOwner());
@@ -128,13 +146,33 @@ void ASTUBaseWeapon::Reload()
 {
     const int32 Delta = FMath::Min(WeaponConf.AmmoClip-Ammo,AllAmmo);
     Ammo += Delta;
-    AllAmmo -= Delta; 
+    if(!WeaponConf.Infinite)
+    {
+        AllAmmo -= Delta;
+    }     
     
 }
 
 void ASTUBaseWeapon::Recoil() const
 {
     UE_LOG(LogBaseWeapon, Display, TEXT("ding"));
+}
+
+UNiagaraComponent * ASTUBaseWeapon::SpawnMuzzleFX()
+
+{
+    
+    
+        return  UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFx,//
+            WeaponMesh,//
+            MuzzleSocketName,//
+            FVector::ZeroVector,//
+            FRotator::ZeroRotator,//
+            EAttachLocation::SnapToTarget,//
+            true);
+    
+    
+    
 }
 
 bool ASTUBaseWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const
@@ -151,8 +189,9 @@ bool ASTUBaseWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const
     const auto HalfRad  = FMath::DegreesToRadians(WeaponConf.BulletSpread);
     const FVector ShotDirection = FMath::VRandCone(ViewRotation.Vector(),HalfRad);
 
-    TraceStart = ViewLocation;
-    TraceEnd = TraceStart + ShotDirection * TraceMaxDistance;
+    //TraceStart = ViewLocation;
+    TraceStart = GetMuzzleLocation();
+    TraceEnd = ViewLocation + ShotDirection * TraceMaxDistance;
     return true;
 }
 
@@ -186,10 +225,15 @@ FVector ASTUBaseWeapon::GetMuzzleLocation()const
     return WeaponMesh->GetSocketLocation(MuzzleSocketName);
 }
 
-void ASTUBaseWeapon::DrawShot(FHitResult HitResult)
+void ASTUBaseWeapon::DrawImpact(FHitResult HitResult)
 {
-    DrawDebugLine(GetWorld(), GetMuzzleLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.f);
+    
     MakeDamage(HitResult);
+}
+
+void ASTUBaseWeapon::DrawShot(const FVector &TraceStart, const FVector &TraceEnd)
+{
+    DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 3.0f, 0, 3.f);
 }
 
 void ASTUBaseWeapon::MakeShot()
@@ -200,7 +244,14 @@ void ASTUBaseWeapon::MakeShot()
        return;
     }
     Ammo --;
-    
+    if (WeaponConf.SingleAction)
+    {
+        SpawnMuzzleFX();
+    }
+    else
+    {
+        SetMuzzleFXVisibility(true);
+    };
     if (IsClipEmpty() && !IsAmmoEmpty())
     {
         OnClipEmpty.Broadcast();
@@ -215,10 +266,11 @@ void ASTUBaseWeapon::MakeShot()
 
 
     MakeHit(HitResult, TraceStart, TraceEnd);
-
+    
+    DrawShot(TraceStart,HitResult.bBlockingHit?HitResult.ImpactPoint:TraceEnd);
     if (HitResult.bBlockingHit)
     {
-        DrawShot(HitResult);
+        DrawImpact(HitResult);
         
     }
     GetWorld()->GetTimerManager().SetTimer(TimerHandle_Recoil, this, &ASTUBaseWeapon::Recoil, FireRate);

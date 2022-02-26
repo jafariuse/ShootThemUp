@@ -4,14 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "STUCoreTypes.h"
+#include "STUWEaponFXComponent.h"
 #include "GameFramework/Actor.h"
 #include "STUBaseWeapon.generated.h"
 
 
 
 class USkeletalMeshComponent;
-
-
+class UNiagaraComponent;
+class UPaperSprite;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
@@ -33,13 +34,14 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     bool TryAddClips(const int32 AmmoAmount);
 
     UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Source Size", Keywords = "Source Texture Sprite"), Category = "UI") 
-    static FVector2D GetSourceSize(UPaperSprite* Sprite);
+     FVector2D GetSourceSize(UPaperSprite* Sprite);
 
 
 
     FOnClipEmptySignature OnClipEmpty;
+  
 
-  protected:
+protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USkeletalMeshComponent *WeaponMesh;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -51,6 +53,10 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     FWeaponUIData WeaponUiData;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    UNiagaraSystem* MuzzleFx;
+
+    
 
 
     FTimerHandle TimerHandle_Fire;
@@ -62,12 +68,14 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     bool GetPlayerController(APlayerController* &Controller) const;
     void Recoil() const;
 
+    UNiagaraComponent * SpawnMuzzleFX();
+    
     virtual void BeginPlay() override;
     virtual void MakeDamage(FHitResult HitResult);
     
     virtual bool GetTraceData(FVector &TraceStart, FVector &TraceEnd) const;
     
-    virtual void DrawShot(FHitResult HitResult);
+    virtual void DrawImpact(FHitResult HitResult);
 
     bool IsClipEmpty() const
     {
@@ -78,6 +86,8 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     {
         return IsClipEmpty()&& Clips() <1;
     }
+
+    virtual void DrawShot(const FVector & TraceStart, const FVector& TraceEnd);
     virtual void MakeShot();
    
     virtual float TimeRemaining(FTimerHandle Timer) const;
@@ -88,7 +98,8 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     int32 Ammo = 0;
     int32 AllAmmo = 0;
     float FireRate = 0.f;
-
-    
+    UPROPERTY()
+    UNiagaraComponent * MuzzleFxComponent;
+    void SetMuzzleFXVisibility(bool bCond);
  
 };

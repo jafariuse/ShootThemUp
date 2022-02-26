@@ -4,6 +4,8 @@
 #include "Weapon/STURifleWeapon.h"
 
 #include "DrawDebugHelpers.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 
 ASTURifleWeapon::ASTURifleWeapon()
@@ -17,11 +19,27 @@ void ASTURifleWeapon::BeginPlay()
     check(WeaponFXComponent);
 }
 
-void ASTURifleWeapon::DrawShot(FHitResult HitResult)
+void ASTURifleWeapon::DrawImpact(FHitResult HitResult)
 {
 
     WeaponFXComponent->PlayImpactFX(HitResult);
     MakeDamage(HitResult);
+    
+}
+
+void ASTURifleWeapon::DrawShot(const FVector &TraceStart, const FVector &TraceEnd)
+{
+    SpawnTraceFX(TraceStart, TraceEnd);
+}
+
+void ASTURifleWeapon::SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd)
+{
+   const auto TraceComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),TraceFX,TraceStart);
+    if (TraceComponent)
+    {
+        TraceComponent->SetNiagaraVariableVec3(TraceTargetName,TraceEnd);
+        
+    }
     
 }
 

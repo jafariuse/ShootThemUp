@@ -80,7 +80,7 @@ FString USTUWeaponComponent::GetAmmoString() const
     FString Result;
     if(!CurrentWeapon) return Result;
     const FAmmoData AmmoData = CurrentWeapon->GetAmmoData();
-    const FString OutputText =AmmoData.Infinite?  FString::Printf(TEXT("%s"),L"\u221E") : FString::Printf(TEXT("%i"),AmmoData.MaxAmmo);
+    const FString OutputText = AmmoData.Infinite?  FString::Printf(TEXT("%s"),L"\u221E") : FString::Printf(TEXT("%i"),AmmoData.MaxAmmo);
     return  FString::Printf(TEXT("%i/%s"),AmmoData.Ammo, *OutputText);
     
     
