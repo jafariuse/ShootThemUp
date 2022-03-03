@@ -11,7 +11,7 @@
 
 #include <string>
 
-DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
+//DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 // Sets default values for this component's properties
 USTUWeaponComponent::USTUWeaponComponent()
 {

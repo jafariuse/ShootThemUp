@@ -40,7 +40,10 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
 
 
     FOnClipEmptySignature OnClipEmpty;
-  
+    bool IsAmmoEmpty() const
+    {
+        return IsClipEmpty()&& Clips() <1;
+    }
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -83,10 +86,7 @@ protected:
         return Ammo <=MinAmmo;
     }
 
-    bool IsAmmoEmpty() const
-    {
-        return IsClipEmpty()&& Clips() <1;
-    }
+ 
 
     virtual void DrawShot(const FVector & TraceStart, const FVector& TraceEnd);
     virtual void MakeShot();
