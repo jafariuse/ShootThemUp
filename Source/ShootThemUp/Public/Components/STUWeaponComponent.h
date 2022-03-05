@@ -25,6 +25,7 @@ public:
     bool GetWeaponUIData(FWeaponUIData& WeaponUIData) const;
     FString GetAmmoString() const;
     bool TryAddAmmo(const TSubclassOf<ASTUBaseWeapon> & Class, int32 AmmoClips);
+    float AmmoPercent(const TSubclassOf<ASTUBaseWeapon> &Class) const;
 
 
 protected:

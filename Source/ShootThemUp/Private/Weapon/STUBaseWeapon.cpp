@@ -69,6 +69,13 @@ bool ASTUBaseWeapon::ReadyToFire() const
     return true;
 }
 
+float ASTUBaseWeapon::AmmoPercent() const
+{
+  if(WeaponConf.Infinite) return  1.f;
+  if (AllAmmo == 0) return 0.f;
+  return WeaponConf.MaxAmmo/AllAmmo;  
+}
+
 FAmmoData ASTUBaseWeapon::GetAmmoData() const
 {
    return FAmmoData{Ammo, WeaponConf.AmmoClip, Clips(), AllAmmo, WeaponConf.Infinite};

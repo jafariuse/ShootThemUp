@@ -98,6 +98,18 @@ bool USTUWeaponComponent::TryAddAmmo(const TSubclassOf<ASTUBaseWeapon> &Class, i
     return false;
 }
 
+float USTUWeaponComponent::AmmoPercent(const TSubclassOf<ASTUBaseWeapon> &Class) const
+{
+    for (ASTUBaseWeapon* Weapon:Weapons)
+    {
+        if (Weapon&& Weapon->IsA(Class))
+        {
+            return Weapon->AmmoPercent();
+        }
+    }
+    return 1.f; 
+}
+
 
 void USTUWeaponComponent::AttachWeaponToSocket(ASTUBaseWeapon *Weapon, const FName& SocketName) const
 {

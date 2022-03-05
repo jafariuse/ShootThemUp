@@ -29,6 +29,7 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     
     bool ReadyToFire() const;
     bool CanReload() const { return Ammo<WeaponConf.AmmoClip&&AllAmmo>0;};
+    float AmmoPercent() const;
     
     FWeaponUIData GetWeaponUiData() const {return WeaponUiData;}
     FAmmoData GetAmmoData() const;
@@ -50,8 +51,8 @@ protected:
     USkeletalMeshComponent *WeaponMesh;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     FName MuzzleSocketName = "MuzzleFlashSocket";
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-    float TraceMaxDistance = 1500.0f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    float TraceMaxDistance = 5000.0f;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     FWeaponConf WeaponConf;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
