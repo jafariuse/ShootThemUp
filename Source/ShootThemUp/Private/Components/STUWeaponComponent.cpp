@@ -11,7 +11,7 @@
 
 #include <string>
 
-DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
+//DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 // Sets default values for this component's properties
 USTUWeaponComponent::USTUWeaponComponent()
 {
@@ -96,6 +96,18 @@ bool USTUWeaponComponent::TryAddAmmo(const TSubclassOf<ASTUBaseWeapon> &Class, i
         }
     }
     return false;
+}
+
+float USTUWeaponComponent::AmmoPercent(const TSubclassOf<ASTUBaseWeapon> &Class) const
+{
+    for (ASTUBaseWeapon* Weapon:Weapons)
+    {
+        if (Weapon&& Weapon->IsA(Class))
+        {
+            return Weapon->AmmoPercent();
+        }
+    }
+    return 1.f; 
 }
 
 

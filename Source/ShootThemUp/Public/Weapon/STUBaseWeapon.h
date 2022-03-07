@@ -29,6 +29,7 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     
     bool ReadyToFire() const;
     bool CanReload() const { return Ammo<WeaponConf.AmmoClip&&AllAmmo>0;};
+    float AmmoPercent() const;
     
     FWeaponUIData GetWeaponUiData() const {return WeaponUiData;}
     FAmmoData GetAmmoData() const;
@@ -40,15 +41,18 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
 
 
     FOnClipEmptySignature OnClipEmpty;
-  
+    bool IsAmmoEmpty() const
+    {
+        return IsClipEmpty()&& Clips() <1;
+    }
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USkeletalMeshComponent *WeaponMesh;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     FName MuzzleSocketName = "MuzzleFlashSocket";
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-    float TraceMaxDistance = 1500.0f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    float TraceMaxDistance = 5000.0f;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     FWeaponConf WeaponConf;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
@@ -83,10 +87,7 @@ protected:
         return Ammo <=MinAmmo;
     }
 
-    bool IsAmmoEmpty() const
-    {
-        return IsClipEmpty()&& Clips() <1;
-    }
+ 
 
     virtual void DrawShot(const FVector & TraceStart, const FVector& TraceEnd);
     virtual void MakeShot();

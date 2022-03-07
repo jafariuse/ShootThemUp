@@ -6,7 +6,7 @@
 #include "DrawDebugHelpers.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
-#include "PaperSprite.h"
+//#include "PaperSprite.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Character.h"
 #include "Weapon/STUWEaponFXComponent.h"
@@ -58,15 +58,22 @@ bool ASTUBaseWeapon::ReadyToFire() const
     
     if (TimeRemaining(TimerHandle_Recoil)>0)
     {
-            UE_LOG(LogBaseWeapon, Display, TEXT("Recoil"));
+//            UE_LOG(LogBaseWeapon, Display, TEXT("Recoil"));
             return false;
     }
     if (Ammo <= MinAmmo)
     {
-        UE_LOG(LogBaseWeapon, Display, TEXT("No Ammo"));
+//        UE_LOG(LogBaseWeapon, Display, TEXT("No Ammo"));
         return false;
     };
     return true;
+}
+
+float ASTUBaseWeapon::AmmoPercent() const
+{
+  if(WeaponConf.Infinite) return  1.f;
+  if (AllAmmo == 0) return 0.f;
+  return WeaponConf.MaxAmmo/AllAmmo;  
 }
 
 FAmmoData ASTUBaseWeapon::GetAmmoData() const
@@ -155,7 +162,7 @@ void ASTUBaseWeapon::Reload()
 
 void ASTUBaseWeapon::Recoil() const
 {
-    UE_LOG(LogBaseWeapon, Display, TEXT("ding"));
+//    UE_LOG(LogBaseWeapon, Display, TEXT("ding"));
 }
 
 UNiagaraComponent * ASTUBaseWeapon::SpawnMuzzleFX()
@@ -177,13 +184,28 @@ UNiagaraComponent * ASTUBaseWeapon::SpawnMuzzleFX()
 
 bool ASTUBaseWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const
 {
-    APlayerController* Controller;
-    if (GetPlayerController(Controller)) return false;
-
+    const auto STUCharacter = Cast<ACharacter>(GetOwner());
+    if (!STUCharacter) return false;
     FVector ViewLocation;
     FRotator ViewRotation;
-    Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+    
+    if (STUCharacter->IsPlayerControlled())
+    {
+        APlayerController* Controller;
+        if (GetPlayerController(Controller)) return false;
 
+   
+        Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+ 
+    }
+    else
+    {
+        ViewLocation = GetMuzzleLocation();
+        ViewRotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
+    }
+
+    
+ 
     
     
     const auto HalfRad  = FMath::DegreesToRadians(WeaponConf.BulletSpread);
@@ -206,7 +228,7 @@ void ASTUBaseWeapon::MakeDamage(FHitResult HitResult)
     if (HitResult.BoneName.ToString()=="b_Head") Crit = 100.f;
     /////
     Victim->TakeDamage(WeaponConf.WeaponPower*Crit, FDamageEvent{}, nullptr, this);
-    UE_LOG(LogBaseWeapon, Display, TEXT("Bone:%s"), *HitResult.BoneName.ToString());
+  //  UE_LOG(LogBaseWeapon, Display, TEXT("Bone:%s"), *HitResult.BoneName.ToString());
    
     
 }

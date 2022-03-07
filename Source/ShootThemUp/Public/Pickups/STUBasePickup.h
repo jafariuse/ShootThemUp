@@ -18,6 +18,7 @@ public:
 	ASTUBasePickup();
 
     virtual bool CanPickup(APawn* PlayerPawn) const {return false;}
+    bool CouldBeTaken() const;
 
 
 protected:
@@ -30,8 +31,9 @@ protected:
     UPROPERTY(VisibleAnywhere, Category="Pickup")
     float CollisionRadius = 30.f;
 
-    UPROPERTY(VisibleAnywhere, Category="Pickup")
+        UPROPERTY(VisibleAnywhere, Category="Pickup")
     float RespawnTime = 10.f;
+    FTimerHandle RespawmTimerHandle;
 
     void SetYaw();
     virtual void BeginPlay() override;

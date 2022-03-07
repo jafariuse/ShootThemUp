@@ -52,8 +52,7 @@ protected:
 
 	
 	virtual void BeginPlay() override;
-    
-
+    virtual  void OnDeath();
     
 
 public:	
@@ -67,6 +66,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Movement")
     float GetDirection() const;
 
+    
 
 
   private:
@@ -78,7 +78,7 @@ public:
 	void OnStartRunning();
     void OnStopRunning();
 
-    void OnDeath();
+    
     void OnHealthChanged(float Health, float HealthDelta) const;
 
     UFUNCTION()

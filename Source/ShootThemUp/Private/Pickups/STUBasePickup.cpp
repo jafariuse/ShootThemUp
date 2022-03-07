@@ -20,6 +20,11 @@ ASTUBasePickup::ASTUBasePickup()
 
 }
 
+bool ASTUBasePickup::CouldBeTaken() const
+{
+    return GetWorldTimerManager().IsTimerActive(RespawmTimerHandle);
+}
+
 
 void ASTUBasePickup::SetYaw()
 {
@@ -59,7 +64,6 @@ void ASTUBasePickup::PickupTaken()
   
     CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
     GetRootComponent()->SetVisibility(false,true);
-    FTimerHandle RespawmTimerHandle;
     GetWorldTimerManager().SetTimer(RespawmTimerHandle,this,&ASTUBasePickup::Respawn,RespawnTime);
 }
 
